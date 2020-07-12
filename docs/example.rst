@@ -36,6 +36,3 @@ gives you super user powers!
 .. uml:: external.uml
 
 
-@startuml
-Alice -> Bob: test
-@enduml

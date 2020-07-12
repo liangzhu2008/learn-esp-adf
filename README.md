@@ -8,7 +8,7 @@ learn to esp-adf-v2.0， 学习 esp-adf-v2.0 框架
 
 * 执行安装包。
 
-* 在 PATH 环境变量添加安装目录，例如: `C:\Program Files\Graphviz 2.44.1\bin` 。
+* 在 PATH 环境变量添加安装目录，例如: `C:\Program Files (x86)\Graphviz2.38\bin` 。
 
 * 在 cmd 命令行模式下， 执行 `dot -version` ，检查安装结果。
 
@@ -35,6 +35,8 @@ learn to esp-adf-v2.0， 学习 esp-adf-v2.0 框架
   sphinx-quickstart
   ```
 
+* 从 https://plantuml.com/zh/download 下载 plantuml.xxx.jar。放到 `docs` 目录下，并执行`java -jar plantuml.xxx.jar -version`检查安装结果。
+
 * 修改 conf.py，加入 Markdown 支持，UML 支持
 
   ```python
@@ -44,8 +46,6 @@ learn to esp-adf-v2.0， 学习 esp-adf-v2.0 框架
 
   plantuml = 'java -jar plantuml.1.2020.15.jar'
   ```
-
-  **note**: plantuml.xxx.jar 从 https://plantuml.com/zh/download 下载。
 
 * 修改 conf.py，加入 sphinx_rtd_theme 主题支持。修改
 
