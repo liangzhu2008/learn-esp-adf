@@ -24,13 +24,13 @@ learn to esp-adf-v2.0， 学习 esp-adf-v2.0 框架
     pip install sphinx sphinx_intl sphinx_rtd_theme recommonmark sphinxcontrib-plantuml
     ```
 
-    sphinx: 文档生成工具
-    sphinx_intl: 多语言工具
-    recommonmark: sphinx支持markdown的插件
-    sphinx_rtd_theme: sphinx的readthedocs主题插件
-    sphinxcontrib-plantuml: uml 生成工具
+    * sphinx: 文档生成工具
+    * sphinx_intl: 多语言工具
+    * recommonmark: sphinx支持markdown的插件
+    * sphinx_rtd_theme: sphinx的readthedocs主题插件
+    * sphinxcontrib-plantuml: uml 生成工具
 
-    **note**: 安装 sphinxcontrib-plantuml 时，会有一个错误提示 *attributeerror '_namespacepath' object has no attribute 'sort'*， 需要执行 `python -m pip install --upgrade pip setuptools wheel`。
+    **note**: 安装 sphinxcontrib-plantuml 时，会有一个错误提示 `attributeerror '_namespacepath' object has no attribute 'sort'`， 需要执行 `python -m pip install --upgrade pip setuptools wheel`。
 
 2. 创建存放文档的目录，执行 sphinx-quickstart 命令
 
