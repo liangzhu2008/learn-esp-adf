@@ -1,6 +1,6 @@
-# Learn-to-esp-adf
+# Learn ESP-ADF
 
-learn to esp-adf-v2.0， 学习 esp-adf-v2.0 框架
+learn esp-adf， 学习 esp-adf 框架.
 
 ## sphinx 安装
 
@@ -99,3 +99,11 @@ make html
 ```
 
 输出的html文件在 ```docs\_build\html```目录下， 打开 ```index.html```即可。
+
+## LICENSE
+
+[Lear ESP-ADF](https://github.com/liangzhu2008/learn-esp-adf) 采用 [Apache-2.0 License](https://github.com/liangzhu2008/learn-esp-adf/blob/master/LICENSE) 授权。
+
+[ESP-IDF](https://github.com/espressif/esp-idf) 采用 [Apache-2.0 License](https://github.com/espressif/esp-idf/blob/master/LICENSE) 授权。
+
+[ESP-ADF](https://github.com/espressif/esp-adf) 采用 [ESPRESSIF MIT License](https://github.com/espressif/esp-adf/blob/master/LICENSE) 授权。
