@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'learn esp-idf'
+project = 'Learn ESP-ADF'
 copyright = '2020, Liang Zhu'
 author = 'Liang Zhu'
 

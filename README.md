@@ -1,8 +1,8 @@
 # Learn ESP-ADF
 
-learn esp-adf， 学习 esp-adf 框架.
+学习 ESP-ADF 框架.
 
-## sphinx 安装
+## Sphinx 安装
 
 ### 准备
 
@@ -16,7 +16,7 @@ learn esp-adf， 学习 esp-adf 框架.
 3. 在 PATH 环境变量添加安装目录，例如: `C:\Program Files (x86)\Graphviz2.38\bin` 。
 4. 在 cmd 命令行模式下， 执行 `dot -version` ，检查安装结果。
 
-### 安装 sphinx
+### 安装 Sphinx
 
 1. 安装软件包（需要先安装 Python）
 
@@ -102,8 +102,8 @@ make html
 
 ## LICENSE
 
-[Lear ESP-ADF](https://github.com/liangzhu2008/learn-esp-adf) 采用 [Apache-2.0 License](https://github.com/liangzhu2008/learn-esp-adf/blob/master/LICENSE) 授权。
+[Learn ESP-ADF](https://github.com/liangzhu2008/learn-esp-adf) 采用 [Apache-2.0 License](https://github.com/liangzhu2008/learn-esp-adf/blob/master/LICENSE) 授权。
 
-[ESP-IDF](https://github.com/espressif/esp-idf) 采用 [Apache-2.0 License](https://github.com/espressif/esp-idf/blob/master/LICENSE) 授权。
+ <!-- [ESP-IDF](https://github.com/espressif/esp-idf) 采用 [Apache-2.0 License](https://github.com/espressif/esp-idf/blob/master/LICENSE) 授权。 -->
 
-[ESP-ADF](https://github.com/espressif/esp-adf) 采用 [ESPRESSIF MIT License](https://github.com/espressif/esp-adf/blob/master/LICENSE) 授权。
+<!-- [ESP-ADF](https://github.com/espressif/esp-adf) 采用 [ESPRESSIF MIT License](https://github.com/espressif/esp-adf/blob/master/LICENSE) 授权。 -->

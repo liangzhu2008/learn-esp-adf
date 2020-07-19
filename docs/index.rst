@@ -1,10 +1,12 @@
-.. learn esp-idf documentation master file, created by
+.. Learn ESP-ADF documentation master file, created by
    sphinx-quickstart on Sun Jul 12 13:08:02 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Learn ESP-IDF
+Learn ESP-ADF
 =============
+
+
 
 .. toctree::
    :maxdepth: 2
@@ -16,10 +18,11 @@ Learn ESP-IDF
 
 .. toctree::
    :maxdepth: 2
-   :caption: Inside API
+   :caption: Inside dispatcher
 
-   /inside/esp_dispatcher
-
+   /inside-dispatcher/index_dispatcher
+   /inside-dispatcher/index_peripheral_service
+   /inside-dispatcher/index_audio_service
 
 
 Indices and tables
