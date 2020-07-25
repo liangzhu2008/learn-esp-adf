@@ -6,6 +6,10 @@
 .. __: https://github.com/espressif/esp-adf/blob/master/components/input_key_service/input_key_service.c
 .. __: https://github.com/espressif/esp-adf/blob/master/examples/advanced_examples/esp_dispatcher_dueros/main/esp_dispatcher_dueros_app.c
 
+
+概述
+============
+
 .. role:: strike
    :class: strike
 
@@ -14,7 +18,7 @@
     caption esp_dispatcher.c
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -27,18 +31,18 @@
     end box
       
     == Create servcie ==
-    example        -> input_service : input_serv = input_key_service_create(&input_cfg)
+    adf_app        -> input_service : input_serv = input_key_service_create(&input_cfg)
     periph_service <- input_service : periph_service_create()
     input_service   -> input_task   : audio_thread_create()
     activate input_task 
     periph_service <- input_task   : periph_service_get_data()
 
     == Add key ==
-    example        -> input_service : input_key_service_add_key( \n input_serv, input_key_info, ...)
+    adf_app        -> input_service : input_key_service_add_key( \n input_serv, input_key_info, ...)
     input_service   ->]             : STAILQ_INSERT_TAIL( \n ..., input_key_node, ...)
 
     == Set callback ==
-    example        -> periph_service : periph_service_set_callback( \n input_serv, input_key_service_cb)
+    adf_app        -> periph_service : periph_service_set_callback( \n input_serv, input_key_service_cb)
     periph_service -> periph_service : impl->callback_func \n = input_key_service_cb
 
     == Get service state ==
@@ -50,7 +54,7 @@
     input_task     ->]               : esp_periph_set_get_queue()
     input_task     ->]               : xQueueReceive()
     periph_service <- input_task     : periph_service_callback()
-    example        <- periph_service : input_key_service_cb()
+    adf_app        <- periph_service : input_key_service_cb()
 
     == --Start servcie-- ==
                   [-> periph_service : --periph_service_start(input_serv)--
@@ -86,7 +90,7 @@ input_key_service_create()
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -100,7 +104,7 @@ input_key_service_create()
 
       
     == Create servcie ==
-    example        -> input_service : input_serv = input_key_service_create(&input_cfg)
+    adf_app        -> input_service : input_serv = input_key_service_create(&input_cfg)
     periph_service <- input_service : periph_service_create()
     input_service   -> input_task   : audio_thread_create()
     activate input_task 
@@ -115,7 +119,7 @@ input_key_service_add_key()
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -128,7 +132,7 @@ input_key_service_add_key()
     end box
 
     == Add key ==
-    example        -> input_service : input_key_service_add_key( \n input_serv, input_key_info, ...)
+    adf_app        -> input_service : input_key_service_add_key( \n input_serv, input_key_info, ...)
     input_service   ->]             : STAILQ_INSERT_TAIL( \n ..., input_key_node, ...)
 
 
@@ -140,7 +144,7 @@ periph_service_set_callback()
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -153,7 +157,7 @@ periph_service_set_callback()
     end box
 
     == Set callback ==
-    example        -> periph_service : periph_service_set_callback( \n input_serv, input_key_service_cb)
+    adf_app        -> periph_service : periph_service_set_callback( \n input_serv, input_key_service_cb)
     periph_service -> periph_service : impl->callback_func \n = input_key_service_cb
 
 
@@ -165,7 +169,7 @@ get_input_key_service_state()
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -189,7 +193,7 @@ receive key event
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -207,7 +211,7 @@ receive key event
     input_task     ->]               : esp_periph_set_get_queue()
     input_task     ->]               : xQueueReceive()
     periph_service <- input_task     : periph_service_callback()
-    example        <- periph_service : input_key_service_cb()
+    adf_app        <- periph_service : input_key_service_cb()
     
 .. note::
 
@@ -222,7 +226,7 @@ receive key event
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -252,7 +256,7 @@ receive key event
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
@@ -281,7 +285,7 @@ input_key_service_destroy()
     hide footbox
 
     box "esp_dispatcher_dueros"
-    participant "esp_dispatcher \n _dueros_app.c" as example order 10
+    participant "esp_dispatcher \n _dueros_app.c" as adf_app order 10
     end box
 
     box "esp_dispatcher" 
