@@ -1,4 +1,4 @@
-esp_dispatcher.c
+﻿esp_dispatcher.c
 ##################
 
 `esp_dispatcher.c`__, `esp_dispatcher_dueros_app.c`__.
@@ -11,48 +11,53 @@ esp_dispatcher.c
 
     caption esp_dispatcher.c
 
-    participant "esp_dispatcher\n_dueros_app.c" as esp_app order 10
-    participant "esp_dispatcher.c\n" as esp_component order 50
-    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as component_task order 60
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c"         as example           order 10
+    end box
+
+    box "esp_dispatcher" #LightBlue
+    participant "esp_dispatcher.c\n"                    as dispatcher_comp   order 20
+    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as dispatcher_task   order 30
+    end box
       
     == Create ==
-    esp_app -> esp_component : dispatcher = esp_dispatcher_create(&d_cfg)
+    example -> dispatcher_comp : dispatcher = esp_dispatcher_create(&d_cfg)
 
-    esp_component ->] : impl->result_que = xQueueCreate()
-    esp_component ->] : impl->exe_que = xQueueCreate()
-    esp_component ->] : impl->mutex = mutex_create()
-    esp_component ->] : STAILQ_INIT(&impl->exe_list)
-    esp_component -> component_task : xTaskCreatePinnedToCore()
-    activate component_task 
+    dispatcher_comp ->] : impl->result_que = xQueueCreate()
+    dispatcher_comp ->] : impl->exe_que = xQueueCreate()
+    dispatcher_comp ->] : impl->mutex = mutex_create()
+    dispatcher_comp ->] : STAILQ_INIT(&impl->exe_list)
+    dispatcher_comp -> dispatcher_task : xTaskCreatePinnedToCore()
+    activate dispatcher_task 
 
     == Register execution function ==
-    esp_app -> esp_component : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->wifi_serv, \nACTION_EXE_TYPE_WIFI_CONNECT, \nwifi_action_connect)
-    esp_component ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
-    esp_app -> esp_component : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->player, \nACTION_EXE_TYPE_AUDIO_PLAY, \nplayer_action_play)
-    esp_component ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
+    example -> dispatcher_comp  : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->wifi_serv, \nACTION_EXE_TYPE_WIFI_CONNECT, \nwifi_action_connect)
+    dispatcher_comp ->]         : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
+    example -> dispatcher_comp  : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->player, \nACTION_EXE_TYPE_AUDIO_PLAY, \nplayer_action_play)
+    dispatcher_comp ->]         : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
     ...  ...
     
     == Execution function ==
-    esp_app -> esp_component : esp_dispatcher_execute(d->dispatcher, \nACTION_EXE_TYPE_AUDIO_PLAY, \nNULL, NULL)
-    esp_component ->] : **mutex_lock(impl->mutex)**
-    esp_component -> component_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_EXE**)
-    component_task -> esp_component : xQueueSend(dispch->result_que, \n**ESP_OK** or **ESP_ERR_ADF_NOT_SUPPORT**)
-    esp_component ->] : xQueueReceive(impl->result_que)
-    esp_component ->] : **mutex_unlock(impl->mutex)**
+    example -> dispatcher_comp  : esp_dispatcher_execute(d->dispatcher, \nACTION_EXE_TYPE_AUDIO_PLAY, \nNULL, NULL)
+    dispatcher_comp ->]         : **mutex_lock(impl->mutex)**
+    dispatcher_comp -> dispatcher_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_EXE**)
+    dispatcher_task -> dispatcher_comp : xQueueSend(dispch->result_que, \n**ESP_OK** or **ESP_ERR_ADF_NOT_SUPPORT**)
+    dispatcher_comp ->]         : xQueueReceive(impl->result_que)
+    dispatcher_comp ->]         : **mutex_unlock(impl->mutex)**
 
     == Destory ==
-    [-> esp_component : esp_dispatcher_destroy(dispatcher)
+    [-> dispatcher_comp : esp_dispatcher_destroy(dispatcher)
 
-    esp_component -> component_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_CMD**)
-    component_task -> esp_component : xQueueSend(dispch->result_que, **ESP_OK**)
-    component_task ->] : vTaskDelete(NULL)
-    deactivate component_task 
+    dispatcher_comp -> dispatcher_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_CMD**)
+    dispatcher_task -> dispatcher_comp : xQueueSend(dispch->result_que, **ESP_OK**)
+    dispatcher_task ->] : vTaskDelete(NULL)
+    deactivate dispatcher_task 
 
-    esp_component ->] : xQueueReceive(impl->result_que)
-    esp_component ->] : STAILQ_FOREACH(item, &impl->exe_list, ...) \n { STAILQ_REMOVE(&impl->exe_list, item, ...) }
-    esp_component ->] : vQueueDelete(impl->result_que)
-    esp_component ->] : vQueueDelete(impl->exe_que)
-    esp_component ->] : mutex_destroy(impl->mutex)
+    dispatcher_comp ->] : xQueueReceive(impl->result_que)
+    dispatcher_comp ->] : STAILQ_FOREACH(item, &impl->exe_list, ...) \n { STAILQ_REMOVE(&impl->exe_list, item, ...) }
+    dispatcher_comp ->] : vQueueDelete(impl->result_que)
+    dispatcher_comp ->] : vQueueDelete(impl->exe_que)
+    dispatcher_comp ->] : mutex_destroy(impl->mutex)
     
 
 .. note::
@@ -69,19 +74,24 @@ esp_dispatcher_create()
 
     hide footbox
 
-    participant "esp_dispatcher\n_dueros_app.c" as esp_app order 10
-    participant "esp_dispatcher.c\n" as esp_component order 50
-    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as component_task order 60
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c"         as example           order 10
+    end box
+
+    box "esp_dispatcher" #LightBlue
+    participant "esp_dispatcher.c\n"                    as dispatcher_comp   order 20
+    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as dispatcher_task   order 30
+    end box
 
     == Create ==
-    esp_app -> esp_component : dispatcher = esp_dispatcher_create(&d_cfg)
+    example -> dispatcher_comp : dispatcher = esp_dispatcher_create(&d_cfg)
 
-    esp_component ->] : impl->result_que = xQueueCreate()
-    esp_component ->] : impl->exe_que = xQueueCreate()
-    esp_component ->] : impl->mutex = mutex_create()
-    esp_component ->] : STAILQ_INIT(&impl->exe_list)
-    esp_component -> component_task : xTaskCreatePinnedToCore()
-    activate component_task 
+    dispatcher_comp ->] : impl->result_que = xQueueCreate()
+    dispatcher_comp ->] : impl->exe_que = xQueueCreate()
+    dispatcher_comp ->] : impl->mutex = mutex_create()
+    dispatcher_comp ->] : STAILQ_INIT(&impl->exe_list)
+    dispatcher_comp -> dispatcher_task : xTaskCreatePinnedToCore()
+    activate dispatcher_task 
 
 
 esp_dispatcher_reg_exe_func()
@@ -91,15 +101,20 @@ esp_dispatcher_reg_exe_func()
 
     hide footbox
 
-    participant "esp_dispatcher\n_dueros_app.c" as esp_app order 10
-    participant "esp_dispatcher.c\n" as esp_component order 50
-    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as component_task order 60
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c"         as example           order 10
+    end box
+
+    box "esp_dispatcher" #LightBlue
+    participant "esp_dispatcher.c\n"                    as dispatcher_comp   order 20
+    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as dispatcher_task   order 30
+    end box
 
     == Register execution function ==
-    esp_app -> esp_component : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->wifi_serv, \nACTION_EXE_TYPE_WIFI_CONNECT, \nwifi_action_connect)
-    esp_component ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
-    esp_app -> esp_component : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->player, \nACTION_EXE_TYPE_AUDIO_PLAY, \nplayer_action_play)
-    esp_component ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
+    example -> dispatcher_comp : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->wifi_serv, \nACTION_EXE_TYPE_WIFI_CONNECT, \nwifi_action_connect)
+    dispatcher_comp ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
+    example -> dispatcher_comp : esp_dispatcher_reg_exe_func(dispatcher, \ndueros_speaker->player, \nACTION_EXE_TYPE_AUDIO_PLAY, \nplayer_action_play)
+    dispatcher_comp ->] : STAILQ_INSERT_TAIL(&impl->exe_list, item, ...)
     ...  ...
     
 
@@ -111,17 +126,22 @@ esp_dispatcher_execute()
 
     hide footbox
 
-    participant "esp_dispatcher\n_dueros_app.c" as esp_app order 10
-    participant "esp_dispatcher.c\n" as esp_component order 50
-    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as component_task order 60
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c"         as example           order 10
+    end box
+
+    box "esp_dispatcher" #LightBlue
+    participant "esp_dispatcher.c\n"                    as dispatcher_comp   order 20
+    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as dispatcher_task   order 30
+    end box
     
     == Execution function ==
-    esp_app -> esp_component : esp_dispatcher_execute(d->dispatcher, \nACTION_EXE_TYPE_AUDIO_PLAY, \nNULL, NULL)
-    esp_component ->] : **mutex_lock(impl->mutex)**
-    esp_component -> component_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_EXE**)
-    component_task -> esp_component : xQueueSend(dispch->result_que, \n**ESP_OK** or **ESP_ERR_ADF_NOT_SUPPORT**)
-    esp_component ->] : xQueueReceive(impl->result_que)
-    esp_component ->] : **mutex_unlock(impl->mutex)**   
+    example -> dispatcher_comp : esp_dispatcher_execute(d->dispatcher, \nACTION_EXE_TYPE_AUDIO_PLAY, \nNULL, NULL)
+    dispatcher_comp ->] : **mutex_lock(impl->mutex)**
+    dispatcher_comp -> dispatcher_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_EXE**)
+    dispatcher_task -> dispatcher_comp : xQueueSend(dispch->result_que, \n**ESP_OK** or **ESP_ERR_ADF_NOT_SUPPORT**)
+    dispatcher_comp ->] : xQueueReceive(impl->result_que)
+    dispatcher_comp ->] : **mutex_unlock(impl->mutex)**   
 
 .. note::
 
@@ -137,20 +157,25 @@ esp_dispatcher_destroy()
 
     hide footbox
 
-    participant "esp_dispatcher\n_dueros_app.c" as esp_app order 10
-    participant "esp_dispatcher.c\n" as esp_component order 50
-    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as component_task order 60
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c"         as example           order 10
+    end box
+
+    box "esp_dispatcher" #LightBlue
+    participant "esp_dispatcher.c\n"                    as dispatcher_comp   order 20
+    participant "esp_dispatcher.c @ \ndispatcher_event_task()" as dispatcher_task   order 30
+    end box
 
     == Destory ==
-    [-> esp_component : esp_dispatcher_destroy(dispatcher)
+    [-> dispatcher_comp : esp_dispatcher_destroy(dispatcher)
 
-    esp_component -> component_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_CMD**)
-    component_task -> esp_component : xQueueSend(dispch->result_que, **ESP_OK**)
-    component_task ->] : vTaskDelete(NULL)
-    deactivate component_task 
+    dispatcher_comp -> dispatcher_task : xQueueSend(impl->exe_que, \n**ESP_DISPCH_EVENT_TYPE_CMD**)
+    dispatcher_task -> dispatcher_comp : xQueueSend(dispch->result_que, **ESP_OK**)
+    dispatcher_task ->] : vTaskDelete(NULL)
+    deactivate dispatcher_task 
 
-    esp_component ->] : xQueueReceive(impl->result_que)
-    esp_component ->] : STAILQ_FOREACH(item, &impl->exe_list, ...) \n { STAILQ_REMOVE(&impl->exe_list, item, ...) }
-    esp_component ->] : vQueueDelete(impl->result_que)
-    esp_component ->] : vQueueDelete(impl->exe_que)
-    esp_component ->] : mutex_destroy(impl->mutex)
+    dispatcher_comp ->] : xQueueReceive(impl->result_que)
+    dispatcher_comp ->] : STAILQ_FOREACH(item, &impl->exe_list, ...) \n { STAILQ_REMOVE(&impl->exe_list, item, ...) }
+    dispatcher_comp ->] : vQueueDelete(impl->result_que)
+    dispatcher_comp ->] : vQueueDelete(impl->exe_que)
+    dispatcher_comp ->] : mutex_destroy(impl->mutex)
