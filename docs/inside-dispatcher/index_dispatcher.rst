@@ -8,3 +8,5 @@
    /inside-dispatcher/esp_dispatcher
    /inside-dispatcher/peripheral_service
    /inside-dispatcher/audio_service
+
+   /inside-dispatcher/esp_actions

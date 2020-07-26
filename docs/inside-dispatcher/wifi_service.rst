@@ -1,4 +1,4 @@
-﻿WiFi 服务 WiFi Service
+﻿Wi-Fi 服务 Wi-Fi Service
 ##########################
 
 `wifi_service.c`__, `esp_dispatcher_dueros_app.c`__.

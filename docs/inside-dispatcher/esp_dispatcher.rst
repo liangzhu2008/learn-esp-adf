@@ -1,5 +1,5 @@
-﻿esp_dispatcher.c
-##################
+﻿分发器 esp_dispatcher.c
+###########################
 
 `esp_dispatcher.c`__, `esp_dispatcher_dueros_app.c`__.
 
