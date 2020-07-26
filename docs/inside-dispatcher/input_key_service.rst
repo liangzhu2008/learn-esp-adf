@@ -33,9 +33,9 @@
     == Create servcie ==
     adf_app        -> input_service : input_serv = input_key_service_create(&input_cfg)
     periph_service <- input_service : periph_service_create()
-    input_service   -> input_task   : audio_thread_create()
+    periph_service -> input_task    : audio_thread_create()
     activate input_task 
-    periph_service <- input_task   : periph_service_get_data()
+    periph_service <- input_task    : periph_service_get_data()
 
     == Add key ==
     adf_app        -> input_service : input_key_service_add_key( \n input_serv, input_key_info, ...)
@@ -106,9 +106,9 @@ input_key_service_create()
     == Create servcie ==
     adf_app        -> input_service : input_serv = input_key_service_create(&input_cfg)
     periph_service <- input_service : periph_service_create()
-    input_service   -> input_task   : audio_thread_create()
+    periph_service -> input_task    : audio_thread_create()
     activate input_task 
-    periph_service <- input_task   : periph_service_get_data()
+    periph_service <- input_task    : periph_service_get_data()
 
 
 input_key_service_add_key()
