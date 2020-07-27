@@ -37,6 +37,62 @@
 | ESP_Dispatcher 中的每个模块和子功能单元，作为一个单独的任务运行。它提供了一个架构，可以简化复杂的产品设计，并适应任何风格的产品。
 | Each module and sub-functional unit in ESP_Dispatcher runs as a separate task, providing a structure that can simplify complex product styles and adapts to any product style.
 
+| ESP_Dispatcher 相关的组件 Components 关系如下所示。
+
+.. uml::
+
+  package esp_actions {
+    esp_action <|-- display_action
+    esp_action <|-- wifi_action
+    esp_action <|-- dueros_action
+    esp_action <|-- recorder_action
+    esp_action <|-- player_action
+  }
+
+  package esp_dispatcher {
+    esp_dispatcher "1" o-- "*" esp_action
+    esp_action -- peripheral_service
+    esp_action -- audio_service
+  }
+
+  package dueros_service {
+    audio_service <|-- dueros_service
+  }
+  package bluetooth_service {
+    audio_service <|-- bluetooth_service
+  }
+
+  package input_key_service {
+    peripheral_service <|-- input_key_service
+  }
+  
+  package ota_service {
+    peripheral_service <|-- ota_service
+  }
+
+  package display_service {
+    peripheral_service <|-- display_service
+    display_service *-- led_indicator
+    display_service *-- led_bar
+  }
+
+  package wifi_service {
+    peripheral_service <|-- wifi_service
+    wifi_service *-- esp_wifi_setting
+    wifi_service *-- wifi_ssid_manager
+    esp_wifi_setting <|-- smart_config
+    esp_wifi_setting <|-- airkiss_config
+    esp_wifi_setting <|-- blufi_config
+  }
+  
+.. tip::
+
+  一个组件 Component 可以看成是 `esp-adf/components`__  下的一个子目录。
+
+.. __: https://github.com/espressif/esp-adf/tree/master/components
+
+
+
 | 一个标准的 ESP_Dispatcher 音频应用程序框图如下所示。
 | A standard ESP_Dispatcher audio application block diagram as shown below.
 
@@ -47,3 +103,4 @@
 
 .. __: https://github.com/espressif/esp-adf/tree/master/examples/advanced_examples/esp_dispatcher_dueros
 .. __: https://github.com/espressif/esp-adf/tree/master/examples/advanced_examples/esp_dispatcher_dueros
+
