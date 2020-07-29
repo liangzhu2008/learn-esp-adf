@@ -71,8 +71,8 @@
     软件设计的时候要小心，不要因此形成 **死锁** 的隐患。
 
 
-esp_dispatcher_create()
-========================
+创建 esp_dispatcher_create()
+=================================
 
 .. uml::
 
@@ -98,8 +98,8 @@ esp_dispatcher_create()
     activate dispatcher_task 
 
 
-esp_dispatcher_reg_exe_func()
-=============================
+注册 esp_dispatcher_reg_exe_func()
+=====================================
 
 .. uml::
 
@@ -123,8 +123,8 @@ esp_dispatcher_reg_exe_func()
     
 
 
-esp_dispatcher_execute()
-=========================
+执行 esp_dispatcher_execute()
+================================
 
 .. uml::
 
@@ -155,8 +155,8 @@ esp_dispatcher_execute()
     软件设计的时候要小心，不要因此形成 **死锁** 的隐患。
 
 
-esp_dispatcher_destroy()
-========================
+删除 esp_dispatcher_destroy()
+====================================
 
 .. uml::
 
