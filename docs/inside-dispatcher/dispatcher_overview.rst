@@ -51,7 +51,7 @@
 
   package esp_dispatcher {
     esp_dispatcher "1" o-- "*" esp_action
-    esp_action -- peripheral_service
+    esp_action -- periph_service
     esp_action -- audio_service
   }
 
@@ -63,21 +63,21 @@
   }
 
   package input_key_service {
-    peripheral_service <|-- input_key_service
+    periph_service <|-- input_key_service
   }
   
   package ota_service {
-    peripheral_service <|-- ota_service
+    periph_service <|-- ota_service
   }
 
   package display_service {
-    peripheral_service <|-- display_service
+    periph_service <|-- display_service
     display_service *-- led_indicator
     display_service *-- led_bar
   }
 
   package wifi_service {
-    peripheral_service <|-- wifi_service
+    periph_service <|-- wifi_service
     wifi_service *-- esp_wifi_setting
     wifi_service *-- wifi_ssid_manager
     esp_wifi_setting <|-- smart_config
