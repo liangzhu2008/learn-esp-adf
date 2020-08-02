@@ -1,14 +1,14 @@
 ﻿在线升级服务 OTA Service
 ####################################
 
+.. tip:: 
+
+    如果图片看不清楚。你可以 **在图片上点击鼠标右键** --> **在新标签页中打开图片** ，然后你可以放大、缩小、移动图片。
+
 `ota_service.c`__, `ota_example.c`__.
 
 .. __: https://github.com/espressif/esp-adf/blob/master/components/ota_service/ota_service.c
 .. __: https://github.com/espressif/esp-adf/blob/master/examples/ota/main/ota_example.c
-
-.. tip:: 
-
-    如果图片太大，看不清楚。你可以 **在图片上点击鼠标右键** --> **在新标签页中打开图片** ，然后你可以放大、缩小、移动图片。
 
 
 

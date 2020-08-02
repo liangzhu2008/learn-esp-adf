@@ -1,14 +1,14 @@
 ﻿按键服务 Input Key Service
 ####################################
 
+.. tip:: 
+
+    如果图片看不清楚。你可以 **在图片上点击鼠标右键** --> **在新标签页中打开图片** ，然后你可以放大、缩小、移动图片。
+
 `input_key_service.c`__, `esp_dispatcher_dueros_app.c`__.
 
 .. __: https://github.com/espressif/esp-adf/blob/master/components/input_key_service/input_key_service.c
 .. __: https://github.com/espressif/esp-adf/blob/master/examples/advanced_examples/esp_dispatcher_dueros/main/esp_dispatcher_dueros_app.c
-
-.. tip:: 
-
-    如果图片太大，看不清楚。你可以 **在图片上点击鼠标右键** --> **在新标签页中打开图片** ，然后你可以放大、缩小、移动图片。
 
 
 概述

@@ -96,7 +96,7 @@
 | 一个标准的 ESP_Dispatcher 音频应用程序框图如下所示。
 | A standard ESP_Dispatcher audio application block diagram as shown below.
 
-.. image:: /_static/esp_dispatcher_audio_app_diagram.png
+.. image:: ../_static/inside-dispatcher/esp_dispatcher_audio_app_diagram.png
 
 | 一个例子：`esp_dispatcher_dueros`__。
 | There is an example in the folder of `esp_dispatcher_dueros`__.
