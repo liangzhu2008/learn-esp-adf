@@ -27,7 +27,7 @@
 
     caption Periph Servcie 类图
 
-    class periph_service_handle_t {
+    class periph_service_impl_t {
         __ private data __
         -periph_service_ctrl service_destroy;
         -periph_service_ctrl service_start;
@@ -62,7 +62,7 @@
     * ``periph_service_ioctl()`` 执行回调函数 ``.service_ioctl`` 。
     * ``periph_service_set_callback()`` 设置回调函数 ``.callback_func`` 及 上下文 ``user_cb_ctx`` 。
     * ``periph_service_callback()`` 执行回调函数 ``.callback_func`` 。
-    * ``periph_service_set_data()`` 设置变量 ``.user_data`` 。实际上大部分时候都是在 ``periph_service_create()`` 里设置 ``.user_data``  。
+    * ``periph_service_set_data()`` 设置变量 ``.user_data`` 。实际上大部分时候都是在 ``periph_service_create()`` 里设置 ``.user_data`` 。 **此函数可能有缺陷** 。
     * ``periph_service_get_data()`` 获取变量 ``.user_data`` 。
 
 
