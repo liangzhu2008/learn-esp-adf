@@ -21,8 +21,9 @@ Learn ESP-ADF
    :caption: Inside dispatcher
 
    /inside-dispatcher/index_dispatcher
-   /inside-dispatcher/index_peripheral_service
+   /inside-dispatcher/index_periph_service
    /inside-dispatcher/index_audio_service
+   /inside-dispatcher/esp_actions
 
 
 Indices and tables

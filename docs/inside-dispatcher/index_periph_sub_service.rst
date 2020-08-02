@@ -1,5 +1,5 @@
-﻿外设服务 Peripheral Service
-##############################
+﻿外设子服务 Periph Sub-service
+################################
 
 .. toctree::
    :maxdepth: 2

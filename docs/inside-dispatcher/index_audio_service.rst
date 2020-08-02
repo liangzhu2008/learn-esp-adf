@@ -4,5 +4,5 @@
 .. toctree::
    :maxdepth: 2
 
-   /inside-dispatcher/dueros_service
-   /inside-dispatcher/bt_service
+   /inside-dispatcher/audio_service
+   /inside-dispatcher/index_audio_sub_service

@@ -6,7 +6,3 @@
 
    /inside-dispatcher/dispatcher_overview
    /inside-dispatcher/esp_dispatcher
-   /inside-dispatcher/periph_service
-   /inside-dispatcher/audio_service
-
-   /inside-dispatcher/esp_actions
