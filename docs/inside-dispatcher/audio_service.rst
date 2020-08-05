@@ -31,8 +31,8 @@
 
     caption Audio Servcie 类图
 
-    class audio_service_impl_t {
-        __ private data __
+    class Audio_Service {
+        __ audio_service_impl_t __
         -service_ctrl service_destroy;
         -service_ctrl service_start;
         -service_ctrl service_stop;
@@ -58,7 +58,16 @@
 
 我们用类图的形式，描述音频服务 Audio Servcie 的实现（实际上代码是用 C 语言实现的）：
 
-* **private data** 部分，是结构体 ``audio_service_impl_t`` 的主要字段。
+* 结构体 ``audio_service_impl_t`` ，是内部私有数据。
+
+    * ``.service_destroy``: 销毁服务的回调函数。
+    * ``.service_start``: 启动服务的回调函数。
+    * ``.service_stop``: 停止服务的回调函数。
+    * ``.service_connect``: 连接服务的回调函数。
+    * ``.service_disconnect``: 断开服务的回调函数。
+    * ``.callback_func``: 事件处理的回调函数。
+    * ``.user_cb_ctx``: ``callback_func`` 的参数。
+    * ``.user_data``: 存放音频子服务的数据。
 
 * **public method** 部分，是 Audio Servcie 的提供的 API 函数。这些函数的实现大部分都很简单:
 
@@ -75,7 +84,7 @@
 
 
 3. 序列图
-============
+=============
 
 .. uml::
 
@@ -85,40 +94,40 @@
     participant "xxx_app.c"         as adf_app  order 10
     end box
 
-    box "xxx_service" 
-    participant "xxx_service.c"   as xxx_service  order 20
-    participant "xxx_service_task()" as service_task  order 30
+    box "esp_dispatcher" #LightBlue
+    participant "audio_service.c"  as audio_service  order 20
     end box
 
-    box "esp_dispatcher" #LightBlue
-    participant "audio_service.c"  as audio_service  order 40
+    box "xxx_service" 
+    participant "xxx_service.c"   as xxx_service  order 30
+    participant "xxx_service_task()" as service_task  order 40
     end box
       
     == Create audio service & set callback ==
     autonumber 1 "<b>(<u>##</u>)"
     adf_app        -> xxx_service : xxx_service_create()
-    xxx_service -> audio_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
+    audio_service  <- xxx_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
 
     alt .task_func!=NULL (实际上是 .task_stack > 0)
     audio_service -> service_task : xTaskCreatePinnedToCore({.task_func})
     activate service_task
     end
 
-    adf_app -> audio_service : audio_service_set_callback({.callback_func=app_event_cb})
-    xxx_service -> audio_service : (--audio_service_set_data(data)--)
+    adf_app      -> audio_service : audio_service_set_callback \n ({.callback_func=app_event_cb})
+    audio_service  <- xxx_service : (--audio_service_set_data(data)--)
 
     == Start audio service ==
     autonumber 10 "<b>(<u>##</u>)"
     adf_app       -> audio_service : audio_service_start()
     alt .service_start != NULL
-    xxx_service   <- audio_service : .service_start() ==> xxx_service_start()
+    audio_service -> xxx_service  : .service_start() \n ==> xxx_service_start()
     end
 
     == Connect audio service ==
     autonumber 20 "<b>(<u>##</u>)"
     adf_app       -> audio_service : audio_service_connect()
     alt .service_connect != NULL
-    xxx_service   <- audio_service : .service_connect() ==> xxx_service_connect()
+    audio_service -> xxx_service   : .service_connect() \n ==> xxx_service_connect()
     end
 
     == Execute callback ==
@@ -126,28 +135,28 @@
     service_task    <-] 
     audio_service  <- service_task : audio_service_callback()
     alt .callback_func != NULL
-    adf_app       <- audio_service : .callback_func() ==> //app_event_cb()//
+    adf_app       <- audio_service : .callback_func() \n ==> //app_event_cb()//
     end
 
     == Disconnect audio service ==
     autonumber 40 "<b>(<u>##</u>)"
     adf_app       -> audio_service : audio_service_disconnect()
     alt .service_disconnect != NULL
-    xxx_service   <- audio_service : .service_disconnect() ==> xxx_service_disconnect()
+    audio_service -> xxx_service   : .service_disconnect() \n ==> xxx_service_disconnect()
     end
 
     == Stop audio service ==
     autonumber 50 "<b>(<u>##</u>)"
     adf_app         -> audio_service : audio_service_stop()
     alt .service_stop != NULL
-    xxx_service     <- audio_service : .service_stop() ==> xxx_service_stop()
+    audio_service   -> xxx_service   : .service_stop() \n ==> xxx_service_stop()
     end
 
     == Destory audio service ==
     autonumber 60 "<b>(<u>##</u>)"
     adf_app        -> audio_service : audio_service_destroy()
     alt .service_desotry != NULL
-    xxx_service     <- audio_service : .service_desotry() ==> xxx_service_destory()    
+    audio_service  -> xxx_service  : .service_desotry() \n ==> xxx_service_destory()    
     xxx_service    -> service_task : (destory task)
     deactivate service_task 
     end
@@ -208,33 +217,31 @@
 
     .. uml::
 
-        caption Create Audio Servcie 序列图
-
         box "xxx_app"
         participant "xxx_app.c"         as adf_app  order 10
         end box
 
-        box "xxx_service" 
-        participant "xxx_service.c"   as xxx_service  order 20
-        participant "xxx_service_task()" as service_task  order 30
+        box "esp_dispatcher" #LightBlue
+        participant "audio_service.c"  as audio_service  order 20
         end box
 
-        box "esp_dispatcher" #LightBlue
-        participant "audio_service.c"  as audio_service  order 40
+        box "xxx_service" 
+        participant "xxx_service.c"   as xxx_service  order 30
+        participant "xxx_service_task()" as service_task  order 40
         end box
         
         == Create audio service & set callback ==
         autonumber 1 "<b>(<u>##</u>)"
         adf_app        -> xxx_service : xxx_service_create()
-        xxx_service -> audio_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
+        audio_service  <- xxx_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
 
         alt .task_func!=NULL (实际上是 .task_stack > 0)
         audio_service -> service_task : xTaskCreatePinnedToCore({.task_func})
         activate service_task
         end
 
-        adf_app -> audio_service : audio_service_set_callback({.callback_func=app_event_cb})
-        xxx_service -> audio_service : (--audio_service_set_data(data)--)
+        adf_app      -> audio_service : audio_service_set_callback \n ({.callback_func=app_event_cb})
+        audio_service  <- xxx_service : (--audio_service_set_data(data)--)
 
 * audio_service_destroy()
 * audio_service_start()
