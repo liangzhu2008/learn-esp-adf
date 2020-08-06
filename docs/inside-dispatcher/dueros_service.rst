@@ -73,98 +73,122 @@
     * ``dueros_service_create()`` 的实现略微复杂一点，看这里  `4. API`_ 。
     * ``dueros_service_state_get()`` 获得 DuerOS Service 状态。
 
-===========================================
+3. 序列图
+=============
 
-.. 3. 序列图
-.. =============
+.. uml::
 
-.. .. uml::
+    caption DuerOS Servcie 序列图
 
-..     caption Audio Servcie 序列图
+    box "esp_dispatcher_dueros"
+    participant "esp_dispatcher\n_dueros_app.c" as adf_app  order 10
+    end box
 
-..     box "xxx_app"
-..     participant "xxx_app.c"         as adf_app  order 10
-..     end box
+    box "esp_dispatcher"
+    participant "esp_dispatcher.c"  as esp_dispatcher  order 20
+    participant "audio_service.c"  as audio_service  order 30
+    end box
 
-..     box "esp_dispatcher" #LightBlue
-..     participant "audio_service.c"  as audio_service  order 20
-..     end box
+    box "esp_actions"
+    participant "dueros_action.c"  as dueros_action  order 40
+    end box
 
-..     box "xxx_service" 
-..     participant "xxx_service.c"   as xxx_service  order 30
-..     participant "xxx_service_task()" as service_task  order 40
-..     end box
+    box "dueros_service" #LightBlue 
+    participant "dueros_service.c" as dueros_service order 60
+    participant "dueros_task()"    as service_task order 70
+    end box
       
-..     == Create audio service & set callback ==
-..     autonumber 1 "<b>(<u>##</u>)"
-..     adf_app        -> xxx_service : xxx_service_create()
-..     audio_service  <- xxx_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
+    == Create audio service & set callback ==
+    autonumber 1 "<b>(<u>##</u>)"
+    adf_app        -> dueros_service : audio_serv = \n dueros_service_create()
+    audio_service  <- dueros_service : audio_service_create({\n .service_destroy = dueros_destroy, \n .service_start = dueros_start, \n .service_stop = dueros_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = dueros_task, \n .user_data = (void *)serv})
 
-..     alt .task_func!=NULL (实际上是 .task_stack > 0)
-..     audio_service -> service_task : xTaskCreatePinnedToCore({.task_func})
-..     activate service_task
-..     end
+    alt .task_func!=NULL (实际上是 .task_stack > 0)
+    audio_service -> service_task : xTaskCreatePinnedToCore({.task_func})
+    activate service_task
+    end
 
-..     adf_app      -> audio_service : audio_service_set_callback \n ({.callback_func=app_event_cb})
-..     audio_service  <- xxx_service : (--audio_service_set_data(data)--)
+    == Register dueros service execution type ==
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_DUER_VOLUME_ADJ, \n duer_dcs_action_vol_adj)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_DUER_AUDIO, \n duer_dcs_action_audio_play)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_DUER_SPEAK, \n duer_dcs_action_speak)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_GET_PROGRESS_BYTE, \n duer_dcs_action_get_progress)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_PAUSE, \n duer_dcs_action_audio_pause)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_RESUME, \n duer_dcs_action_audio_resume)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_VOLUME_GET, \n duer_dcs_action_get_state)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_VOLUME_SET, \n duer_dcs_action_vol_set)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_AUDIO_STOP, \n duer_dcs_action_audio_stop)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_DUER_CONNECT, \n dueros_action_connect)
+    adf_app        -> esp_dispatcher  :  esp_dispatcher_reg_exe_func \n (ACTION_EXE_TYPE_DUER_DISCONNECT, \n dueros_action_disconnect)
 
-..     == Start audio service ==
-..     autonumber 10 "<b>(<u>##</u>)"
-..     adf_app       -> audio_service : audio_service_start()
-..     alt .service_start != NULL
-..     audio_service -> xxx_service  : .service_start() \n ==> xxx_service_start()
-..     end
+    == Set event callback ==
+    adf_app        -> audio_service  : audio_service_set_callback \n ({.callback_func=duer_callback})
 
-..     == Connect audio service ==
-..     autonumber 20 "<b>(<u>##</u>)"
-..     adf_app       -> audio_service : audio_service_connect()
-..     alt .service_connect != NULL
-..     audio_service -> xxx_service   : .service_connect() \n ==> xxx_service_connect()
-..     end
+    == Start audio service ==
+    autonumber 20 "<b>(<u>##</u>)"
+    adf_app       <-]              : rec_engine_cb \n (REC_EVENT_VAD_START)
+    adf_app       -> audio_service : audio_service_start()
+    alt .service_start != NULL
+    audio_service -> dueros_service : .service_start() \n ==> dueros_start()
+    end
 
-..     == Execute callback ==
-..     autonumber 30 "<b>(<u>##</u>)"
-..     service_task    <-] 
-..     audio_service  <- service_task : audio_service_callback()
-..     alt .callback_func != NULL
-..     adf_app       <- audio_service : .callback_func() \n ==> //app_event_cb()//
-..     end
+    == Connect audio service ==
+    autonumber 30 "<b>(<u>##</u>)"
+    adf_app        <-]              : wifi_service_cb \n (WIFI_SERV_EVENT_CONNECTED)
+    adf_app        -> esp_dispatcher : esp_dispatcher_execute \n (ACTION_EXE_TYPE_DUER_CONNECT)
+    esp_dispatcher -> dueros_action : **send msg to new task \n dueros_action_connect()**
+    dueros_action  -> audio_service : audio_service_connect()
+    alt .service_connect != NULL
+    audio_service -> dueros_service : .service_connect() \n ==> dueros_connect()
+    end
 
-..     == Disconnect audio service ==
-..     autonumber 40 "<b>(<u>##</u>)"
-..     adf_app       -> audio_service : audio_service_disconnect()
-..     alt .service_disconnect != NULL
-..     audio_service -> xxx_service   : .service_disconnect() \n ==> xxx_service_disconnect()
-..     end
+    == Execute callback ==
+    autonumber 40 "<b>(<u>##</u>)"
+    service_task    <-] 
+    audio_service  <- service_task : audio_service_callback()
+    alt .callback_func != NULL
+    adf_app       <- audio_service : .callback_func() \n ==> duer_callback()
+    end
 
-..     == Stop audio service ==
-..     autonumber 50 "<b>(<u>##</u>)"
-..     adf_app         -> audio_service : audio_service_stop()
-..     alt .service_stop != NULL
-..     audio_service   -> xxx_service   : .service_stop() \n ==> xxx_service_stop()
-..     end
+    == Disconnect audio service ==
+    autonumber 50 "<b>(<u>##</u>)"
+    adf_app        <-]              : wifi_service_cb \n (WIFI_SERV_EVENT_DISCONNECTED)
+    adf_app        -> esp_dispatcher : esp_dispatcher_execute \n (ACTION_EXE_TYPE_DUER_DISCONNECT)
+    esp_dispatcher -> dueros_action : **send msg to new task \n dueros_action_disconnect()**
+    dueros_action  -> audio_service : audio_service_disconnect()
+    alt .service_disconnect != NULL
+    audio_service -> dueros_service   : .service_disconnect() \n ==> dueros_disconnect()
+    end
 
-..     == Destory audio service ==
-..     autonumber 60 "<b>(<u>##</u>)"
-..     adf_app        -> audio_service : audio_service_destroy()
-..     alt .service_desotry != NULL
-..     audio_service  -> xxx_service  : .service_desotry() \n ==> xxx_service_destory()    
-..     xxx_service    -> service_task : (destory task)
-..     deactivate service_task 
-..     end
+    == Stop audio service ==
+    autonumber 60 "<b>(<u>##</u>)"
+    adf_app         <-]              : rec_engine_cb \n (REC_EVENT_VAD_STOP \n | REC_EVENT_WAKEUP_END)
+    adf_app         -> audio_service : audio_service_stop()
+    alt .service_stop != NULL
+    audio_service   -> dueros_service   : .service_stop() \n ==> dueros_stop()
+    end
+
+    == --Destory audio service-- ==
+    autonumber 70 "<b>(<u>##</u>)"
+    [-> audio_service                 : audio_service_destroy()
+    alt .service_desotry != NULL
+    audio_service  -> dueros_service  : .service_desotry() \n ==> dueros_destory()    
+    dueros_service    -> service_task : (destory task)
+    deactivate service_task 
+    end
 
 .. **对像说明：**
 
 .. * **xxx_app.c**: 某个用户程序
-.. * **xxx_service.c**: 某个音频子服务
-.. * **xxx_service_task()**: 音频子服务的内部任务
+.. * **dueros_service.c**: 某个音频子服务
+.. * **dueros_task()**: 音频子服务的内部任务
 .. * **audio_service.c**：音频服务
 
 .. **流程说明：**
 
-.. 1. xxx_app.c 调用某个音频子服务 ``xxx_service_create()``。
+.. 1. xxx_app.c 调用某个音频子服务 ``dueros_service_create()``。
 
-.. 2. xxx_service.c 调用 ``audio_service_create()``, 并会将 ``.service_destroy`` ， ``.service_start`` , ``.service_stop`` , ``.service_connect`` , ``.service_disconnect`` ,  等回调函数作为参数的字段传入。 同时也会将自已的地址，作为 ``.user_data`` 参数字段传入。 若音频子服务需要创建内部任务，则会将内部任务函数作为 ``.task_func`` 参数字段传。
+.. 2. dueros_service.c 调用 ``audio_service_create()``, 并会将 ``.service_destroy`` ， ``.service_start`` , ``.service_stop`` , ``.service_connect`` , ``.service_disconnect`` ,  等回调函数作为参数的字段传入。 同时也会将自已的地址，作为 ``.user_data`` 参数字段传入。 若音频子服务需要创建内部任务，则会将内部任务函数作为 ``.task_func`` 参数字段传。
 
 .. 3. audio_service.c 将上述回调函数和 ``.user_data`` 保存下来。若 ``.task_func`` 不为空(实际上是 ``.task_stack > 0``)，则创建内部任务。
 
@@ -179,8 +203,8 @@
 .. 20. xxx_app.c 调用 ``audio_service_connect()``。
 .. 21. 若 ``.service_connect`` 不为空，则会被执行。
 
-.. 30. 内部任务 xxx_service_task() 收到外部事件。
-.. 31. 内部任务 xxx_service_task() 调用 ``audio_service_callback()`` 。
+.. 30. 内部任务 dueros_task() 收到外部事件。
+.. 31. 内部任务 dueros_task() 调用 ``audio_service_callback()`` 。
 .. 32. 若 ``.callback_func`` 不为空， 则会被执行。
 
 .. 40. xxx_app.c 调用 ``audio_service_discconect()``。
@@ -191,7 +215,7 @@
 
 .. 60. xxx_app.c 调用 ``audio_service_destroy()``, 销毁某个音频子服务。
 .. 61. 若 ``.service_destroy`` 不为空， 则会被 audio_service.c 调用。
-.. 62. xxx_service.c 中止内部任务 xxx_service_task() 。
+.. 62. dueros_service.c 中止内部任务 dueros_task() 。
 
 ..     *DuerOS Service 是 60, 61, 62 流程。*
 
@@ -217,15 +241,15 @@
 ..         participant "audio_service.c"  as audio_service  order 20
 ..         end box
 
-..         box "xxx_service" 
-..         participant "xxx_service.c"   as xxx_service  order 30
-..         participant "xxx_service_task()" as service_task  order 40
+..         box "dueros_service" 
+..         participant "dueros_service.c"   as dueros_service  order 30
+..         participant "dueros_task()" as service_task  order 40
 ..         end box
         
 ..         == Create audio service & set callback ==
 ..         autonumber 1 "<b>(<u>##</u>)"
-..         adf_app        -> xxx_service : xxx_service_create()
-..         audio_service  <- xxx_service : audio_service_create({\n .service_destroy = xxx_service_destroy, \n .service_start = xxx_service_start, \n .service_stop = xxx_service_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = xxx_service_task, \n .user_data = (void *)serv})
+..         adf_app        -> dueros_service : dueros_service_create()
+..         audio_service  <- dueros_service : audio_service_create({\n .service_destroy = dueros_service_destroy, \n .service_start = dueros_start, \n .service_stop = dueros_stop, \n .service_connect = dueros_connect, \n .service_disconnect = dueros_disconnect, \n .task_func  = dueros_task, \n .user_data = (void *)serv})
 
 ..         alt .task_func!=NULL (实际上是 .task_stack > 0)
 ..         audio_service -> service_task : xTaskCreatePinnedToCore({.task_func})
@@ -233,7 +257,7 @@
 ..         end
 
 ..         adf_app      -> audio_service : audio_service_set_callback \n ({.callback_func=app_event_cb})
-..         audio_service  <- xxx_service : (--audio_service_set_data(data)--)
+..         audio_service  <- dueros_service : (--audio_service_set_data(data)--)
 
 .. * audio_service_destroy()
 .. * audio_service_start()
