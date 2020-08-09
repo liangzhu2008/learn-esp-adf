@@ -116,18 +116,18 @@
     adf_app      -> audio_service : audio_service_set_callback \n ({.callback_func=app_event_cb})
     audio_service  <- xxx_service : (--audio_service_set_data(data)--)
 
-    == Start audio service ==
-    autonumber 10 "<b>(<u>##</u>)"
-    adf_app       -> audio_service : audio_service_start()
-    alt .service_start != NULL
-    audio_service -> xxx_service  : .service_start() \n ==> xxx_service_start()
-    end
-
     == Connect audio service ==
-    autonumber 20 "<b>(<u>##</u>)"
+    autonumber 10 "<b>(<u>##</u>)"
     adf_app       -> audio_service : audio_service_connect()
     alt .service_connect != NULL
     audio_service -> xxx_service   : .service_connect() \n ==> xxx_service_connect()
+    end
+
+    == Start audio service ==
+    autonumber 20 "<b>(<u>##</u>)"
+    adf_app       -> audio_service : audio_service_start()
+    alt .service_start != NULL
+    audio_service -> xxx_service  : .service_start() \n ==> xxx_service_start()
     end
 
     == Execute callback ==
@@ -138,18 +138,18 @@
     adf_app       <- audio_service : .callback_func() \n ==> //app_event_cb()//
     end
 
-    == Disconnect audio service ==
-    autonumber 40 "<b>(<u>##</u>)"
-    adf_app       -> audio_service : audio_service_disconnect()
-    alt .service_disconnect != NULL
-    audio_service -> xxx_service   : .service_disconnect() \n ==> xxx_service_disconnect()
-    end
-
     == Stop audio service ==
-    autonumber 50 "<b>(<u>##</u>)"
+    autonumber 40 "<b>(<u>##</u>)"
     adf_app         -> audio_service : audio_service_stop()
     alt .service_stop != NULL
     audio_service   -> xxx_service   : .service_stop() \n ==> xxx_service_stop()
+    end
+
+    == Disconnect audio service ==
+    autonumber 50 "<b>(<u>##</u>)"
+    adf_app       -> audio_service : audio_service_disconnect()
+    alt .service_disconnect != NULL
+    audio_service -> xxx_service   : .service_disconnect() \n ==> xxx_service_disconnect()
     end
 
     == Destory audio service ==
@@ -172,7 +172,7 @@
 
 1. xxx_app.c 调用某个音频子服务 ``xxx_service_create()``。
 
-2. xxx_service.c 调用 ``audio_service_create()``, 并会将 ``.service_destroy`` ， ``.service_start`` , ``.service_stop`` , ``.service_connect`` , ``.service_disconnect`` ,  等回调函数作为参数的字段传入。 同时也会将自已的地址，作为 ``.user_data`` 参数字段传入。 若音频子服务需要创建内部任务，则会将内部任务函数作为 ``.task_func`` 参数字段传。
+2. xxx_service.c 调用 ``audio_service_create()``, 并会将 ``.service_destroy`` ， ``.service_start`` , ``.service_stop`` , ``.service_connect`` , ``.service_disconnect`` ,  等回调函数作为参数的字段传入。 同时也会将自已的地址，作为 ``.user_data`` 参数字段传入。 若音频子服务需要创建内部任务，则会将内部任务函数作为 ``.task_func`` 参数字段传入。
 
 3. audio_service.c 将上述回调函数和 ``.user_data`` 保存下来。若 ``.task_func`` 不为空(实际上是 ``.task_stack > 0``)，则创建内部任务。
 
@@ -181,21 +181,21 @@
 5. ``audio_service_set_data()`` 此函数有缺陷，且实际上没有调用过。
 
 
-10. xxx_app.c 调用 ``audio_service_start()``。
-11. 若 ``.service_start`` 不为空，则会被执行。
+10. xxx_app.c 调用 ``audio_service_connect()``。
+11. 若 ``.service_connect`` 不为空，则会被执行。
 
-20. xxx_app.c 调用 ``audio_service_connect()``。
-21. 若 ``.service_connect`` 不为空，则会被执行。
+20. xxx_app.c 调用 ``audio_service_start()``。
+21. 若 ``.service_start`` 不为空，则会被执行。
 
 30. 内部任务 xxx_service_task() 收到外部事件。
 31. 内部任务 xxx_service_task() 调用 ``audio_service_callback()`` 。
 32. 若 ``.callback_func`` 不为空， 则会被执行。
 
-40. xxx_app.c 调用 ``audio_service_discconect()``。
-41. 若 ``.service_discconect`` 不为空，则会被执行。
+40. xxx_app.c 调用 ``audio_service_stop()``。
+41. 若 ``.service_stop`` 不为空，则会被执行。
 
-50. xxx_app.c 调用 ``audio_service_stop()``。
-51. 若 ``.service_stop`` 不为空，则会被执行。
+50. xxx_app.c 调用 ``audio_service_discconect()``。
+51. 若 ``.service_discconect`` 不为空，则会被执行。
 
 60. xxx_app.c 调用 ``audio_service_destroy()``, 销毁某个音频子服务。
 61. 若 ``.service_destroy`` 不为空， 则会被 audio_service.c 调用。
