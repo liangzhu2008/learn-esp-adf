@@ -20,10 +20,11 @@ Learn ESP-ADF
    :maxdepth: 2
    :caption: Inside dispatcher
 
-   /inside-dispatcher/index_dispatcher
+   /inside-dispatcher/dispatcher_overview
+   /inside-dispatcher/esp_dispatcher
+   /inside-dispatcher/esp_actions
    /inside-dispatcher/index_periph_service
    /inside-dispatcher/index_audio_service
-   /inside-dispatcher/esp_actions
 
 
 Indices and tables
