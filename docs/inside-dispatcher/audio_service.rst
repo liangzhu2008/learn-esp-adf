@@ -13,7 +13,7 @@
    :class: strike
 
 
-1. 概述
+概述
 =========
 
 
@@ -24,7 +24,7 @@
 当前的代码实现（如 DuerOS Service），后者实现时基本上完全覆盖（或继承）前者的方法 —— **除了创建 Create 与特殊 API 要调用音频子服务的API；一般都调用音频服务的 API** 。
 
 
-2. 类图
+类图
 =========
 
 .. uml::
@@ -71,7 +71,7 @@
 
 * **public method** 部分，是 Audio Servcie 的提供的 API 函数。这些函数的实现大部分都很简单:
 
-    * ``audio_service_create()`` 的实现略微复杂一点，看这里  `4. API`_ 。
+    * ``audio_service_create()`` 的实现略微复杂一点，看这里  `API`_ 。
     * ``audio_service_destroy()`` 执行回调函数 ``.service_destroy`` 。
     * ``audio_service_start()`` 执行回调函数 ``.service_start`` 。
     * ``audio_service_stop()`` 执行回调函数 ``.service_stop`` 。
@@ -83,7 +83,7 @@
     * ``audio_service_get_data()`` 获取变量 ``.user_data`` 。
 
 
-3. 序列图
+序列图
 =============
 
 .. uml::
@@ -209,7 +209,7 @@
     上述流程只表示一般做法。各音频子服务的实现，可能与上述流程并不完全一致。
 
 
-4. API
+API
 =========
 
 
@@ -254,10 +254,10 @@
 * audio_service_get_data()
 
 
-5. 与音频子服务的映射
+与音频子服务的映射
 =================================================
 
-5.1 完全映射
+完全映射
 ----------------------------
 
 同时包括了 **回调函数映射** 与 **API映射** 。
@@ -283,7 +283,7 @@
 * ``audio_service_get_data()`` ：为各音频子服务提供的内部 API，用户不应该调用。	
 
 
-5.2 回调函数映射
+回调函数映射
 -----------------------------
 
 .. figure:: ../_static/inside-dispatcher/audio_service_callback_map.png
@@ -293,7 +293,7 @@
    Audio  Service 与 各音频子服务的回调函数映射
 
 
-5.3 API 映射
+API 映射
 ----------------------------
 
 .. figure:: ../_static/inside-dispatcher/audio_service_api_map.png

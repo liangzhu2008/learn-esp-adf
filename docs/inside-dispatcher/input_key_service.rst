@@ -11,7 +11,7 @@
 .. __: https://github.com/espressif/esp-adf/blob/master/examples/advanced_examples/esp_dispatcher_dueros/main/esp_dispatcher_dueros_app.c
 
 
-概述
+序列图
 ============
 
 .. role:: strike

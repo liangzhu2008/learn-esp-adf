@@ -7,7 +7,7 @@
 .. __: https://github.com/espressif/esp-adf/blob/master/examples/advanced_examples/esp_dispatcher_dueros/main/esp_dispatcher_dueros_app.c
 
 
-概述
+序列图
 ============
 
 .. uml::
@@ -71,7 +71,7 @@
     软件设计的时候要小心，不要因此形成 **死锁** 的隐患。
 
 
-创建 esp_dispatcher_create()
+esp_dispatcher_create()
 =================================
 
 .. uml::
@@ -98,7 +98,7 @@
     activate dispatcher_task 
 
 
-注册 esp_dispatcher_reg_exe_func()
+esp_dispatcher_reg_exe_func()
 =====================================
 
 .. uml::
@@ -123,7 +123,7 @@
     
 
 
-执行 esp_dispatcher_execute()
+esp_dispatcher_execute()
 ================================
 
 .. uml::
@@ -155,7 +155,7 @@
     软件设计的时候要小心，不要因此形成 **死锁** 的隐患。
 
 
-删除 esp_dispatcher_destroy()
+esp_dispatcher_destroy()
 ====================================
 
 .. uml::

@@ -10,7 +10,7 @@
 .. __: https://github.com/espressif/esp-adf/blob/master/components/esp_dispatcher/periph_service.c
 
 
-1. 概述
+概述
 =========
 
 **外设服务** Periph Servcie，是为 OTA Service、Input Key Servcie 等 **外设子服务** 提供一个框架 —— 前者是父类，后者是子类。
@@ -20,7 +20,7 @@
 大致的原则：**优先调用外设子服务的API；否则调用外设服务的API（这时需要注意外设子服务是如何实现的）。**
 
 
-2. 类图
+类图
 =========
 
 .. uml::
@@ -55,7 +55,7 @@
 
 * **public method** 部分，是 Periph Servcie 的提供的 API 函数。这些函数的实现大部分都很简单:
 
-    * ``periph_service_create()`` 的实现略微复杂一点，看这里  `4. API`_ 。
+    * ``periph_service_create()`` 的实现略微复杂一点，看这里  `API`_ 。
     * ``periph_service_destroy()`` 执行回调函数 ``.service_destroy`` 。
     * ``periph_service_start()`` 执行回调函数 ``.service_start`` 。
     * ``periph_service_stop()`` 执行回调函数 ``.service_stop`` 。
@@ -66,7 +66,7 @@
     * ``periph_service_get_data()`` 获取变量 ``.user_data`` 。
 
 
-3. 序列图
+序列图
 ============
 
 .. uml::
@@ -188,12 +188,11 @@
     *Input Key Service 与 OTA Service 是 50, 51, 52 流程。*
 
 
-
 .. note::
 
     上述流程只表示一般做法。各外设子服务的实现，并不完全与上述流程保持一致。
 
-4. API
+API
 =========
 
 
@@ -240,10 +239,10 @@
 * periph_service_get_data()
 
 
-5. 与外设子服务的映射
+与外设子服务的映射
 =================================================
 
-5.1 完全映射
+完全映射
 ----------------------------
 
 同时包括了 **回调函数映射** 与 **API映射** 。
@@ -275,7 +274,7 @@
     你可以自已修订这个bug： 把 ``.service_destroy = wifi_service_destroy,`` 修改为 ``.service_destroy = NULL,``" 。
 
 
-5.2 回调函数映射
+回调函数映射
 -----------------------------
 
 .. figure:: ../_static/inside-dispatcher/periph_service_callback_map.png
@@ -285,7 +284,7 @@
    Periph Service 与 各外设子服务的回调函数映射
 
 
-5.3 API 映射
+API 映射
 ----------------------------
 
 .. figure:: ../_static/inside-dispatcher/periph_service_api_map.png

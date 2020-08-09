@@ -14,7 +14,7 @@
    :class: strike
 
 
-1. 概述
+概述
 =========
 
 
@@ -25,7 +25,7 @@
 * 除了创建 Create 与特殊 API 要调用音频子服务的API；一般都调用音频服务的 API。
 
 
-2. 类图
+类图
 =========
 
 .. uml::
@@ -70,10 +70,10 @@
 
 * **public method** 部分，是 DuerOS Servcie 的提供的 API 函数。这些函数的实现大部分都很简单:
 
-    * ``dueros_service_create()`` 的实现略微复杂一点，看这里  `4. API`_ 。
+    * ``dueros_service_create()`` 的实现略微复杂一点，看这里  `API`_ 。
     * ``dueros_service_state_get()`` 获得 DuerOS Service 状态。
 
-3. 序列图
+序列图
 =============
 
 .. uml::
@@ -324,7 +324,7 @@
 95. dueros_service.c 中止内部任务 dueros_task() 。
 
 
-4. API
+API
 =========
 
 * dueros_service_create()
