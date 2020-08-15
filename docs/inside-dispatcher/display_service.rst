@@ -5,7 +5,7 @@
 
     如果图片看不清楚。你可以 **在图片上点击鼠标右键** --> **在新标签页中打开图片** ，然后你可以放大、缩小、移动图片。
 
-`display_service.c`__, `esp_dispatcher_dueros_app.c`__.
+`display_service.c`__ , `esp_dispatcher_dueros_app.c`__ 。
 
 .. __: https://github.com/espressif/esp-adf/blob/master/components/display_service/display_service.c
 

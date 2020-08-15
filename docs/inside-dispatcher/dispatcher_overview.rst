@@ -1,5 +1,5 @@
-﻿概述
-##############
+﻿架构概述 Architech Overview
+################################
 
 本节原文详见 `这里`__。
 
@@ -41,39 +41,18 @@
 
 .. uml::
 
-  package esp_actions {
-    esp_action <|-- display_action
-    esp_action <|-- wifi_action
-    esp_action <|-- dueros_action
-    esp_action <|-- recorder_action
-    esp_action <|-- player_action
-  }
-
   package esp_dispatcher {
     esp_dispatcher "1" o-- "*" esp_action
     esp_action -- periph_service
     esp_action -- audio_service
   }
 
-  package dueros_service {
-    audio_service <|-- dueros_service
-  }
-  package bluetooth_service {
-    audio_service <|-- bluetooth_service
-  }
-
-  package input_key_service {
-    periph_service <|-- input_key_service
-  }
-  
-  package ota_service {
-    periph_service <|-- ota_service
-  }
-
-  package display_service {
-    periph_service <|-- display_service
-    display_service *-- led_indicator
-    display_service *-- led_bar
+  package esp_actions {
+    esp_action <|-- wifi_action
+    esp_action <|-- player_action
+    esp_action <|-- recorder_action
+    esp_action <|-- display_action
+    esp_action <|-- dueros_action
   }
 
   package wifi_service {
@@ -83,6 +62,36 @@
     esp_wifi_setting <|-- smart_config
     esp_wifi_setting <|-- airkiss_config
     esp_wifi_setting <|-- blufi_config
+  }
+
+  package display_service {
+    periph_service <|-- display_service
+    display_service *-- led_indicator
+    display_service *-- led_bar
+  }
+
+  package input_key_service {
+    periph_service <|-- input_key_service
+  }
+
+  package battery_service {
+    periph_service <|-- battery_service
+  }
+  
+  package ota_service {
+    periph_service <|-- ota_service
+  }
+  
+  package coredump_upload_service {
+    periph_service <|-- coredump_upload_service
+  }
+
+  package dueros_service {
+    audio_service <|-- dueros_service
+  }
+
+  package bluetooth_service {
+    audio_service <|-- bluetooth_service
   }
   
 .. tip::

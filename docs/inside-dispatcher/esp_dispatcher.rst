@@ -1,4 +1,4 @@
-﻿ESP分发器 ESP Dispatcher
+﻿分发器 ESP Dispatcher
 #####################################
 
 `esp_dispatcher.c`__, `esp_dispatcher_dueros_app.c`__.
